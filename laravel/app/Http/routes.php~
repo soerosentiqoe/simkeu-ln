@@ -1,0 +1,91 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the controller to call when that URI is requested.
+|
+*/
+
+
+/* authenticate routes */
+Route::get('/login', 'AuthenticateController@index');
+Route::post('/auth', 'AuthenticateController@login');
+Route::get('/logout', 'AuthenticateController@logout');
+
+/* group app routes (session only) */
+Route::group(['middleware' => 'auth'], function(){
+	
+	/* Get App for angular */
+	Route::get('/', 'AppController@index');		
+	//route token
+	Route::get('/token', 'AuthenticateController@token');
+	
+	//route cek level
+	Route::get('/cek/level', 'AuthenticateController@level');
+	Route::get('/cek/level/{kdlevel}', 'AuthenticateController@level_by_kode');
+	
+	//route utama	
+	Route::get('/profile', 'ProfileController@index');
+	Route::put('/profile', 'ProfileController@ubah');
+	Route::post('/profile', 'ProfileController@upload');
+	
+	/* Route for development */
+	/* Route utama */
+	// route File
+	Route::post('/upload/file', 'FileController@upload');	
+	//route DIPA
+	
+    Route::post('/dipa/process', 'DipaController@process');
+     Route::post('/dipa/simpan', 'DipaController@simpanDipa');
+    Route::get('/dipa/monitoring', 'DipaController@monitoring');
+    Route::get('/data/pagurealisasi', 'DipaController@getPaguRealisasi');
+    Route::get('/dipa/detailakun','DipaController@getDetailKdakun');
+    //SPM
+     Route::post('/process/spm', 'SpmController@process');
+    Route::get('/spm/getmaxnilkurs','SpmController@getMaxNilkurs');
+    
+    //dropdown
+    Route::get('/dropdown/getjenbuku', 'DropdownController@getJenbuku');
+    Route::get('/dropdown/getvalas', 'DropdownController@getValas');
+     Route::get('/dropdown/getreftran', 'DropdownController@getRefTran');
+     Route::get('/dropdown/getkdjenspm', 'DropdownController@getKdjenspm');
+     Route::get('/dropdown/getkdprogram', 'DropdownController@getKdprogram');
+    Route::get('/dropdown/getkdgiat', 'DropdownController@getKdgiat');
+    Route::get('/dropdown/getkdoutput', 'DropdownController@getKdoutput');
+    Route::get('/dropdown/getkdsoutput', 'DropdownController@getKdsoutput');
+    Route::get('/dropdown/getkdkmpnen', 'DropdownController@getKdkmpnen');
+    Route::get('/dropdown/getkdskmpnen', 'DropdownController@getKdskmpnen');
+    Route::get('/dropdown/getkdakun', 'DropdownController@getKdakun');
+    Route::get('/dropdown/getbulan', 'DropdownController@getBulan');
+    
+    //routes saldoawal
+    Route::post('/saldoawal/add', 'SaldoawalController@add');
+    Route::put('/saldoawal/add', 'SaldoawalController@ubah');
+    Route::delete('/saldoawal/add', 'SaldoawalController@hapus');
+    Route::get('/saldoawal/monitoring', 'SaldoawalController@monitoring');
+    Route::get('/saldoawal/cari/{id}', 'SaldoawalController@getDataById');
+    
+    // transaksi
+    Route::get('/transaksi/referensi/{id}', 'TransaksiController@getRefById');
+    Route::get('/transaksi/loadspm', 'SpmController@loadSpm');
+    Route::get('/transaksi/getmaxnotran', 'TransaksiController@getMaxNotran');
+    Route::post('/transaksi/add', 'TransaksiController@add');
+    Route::delete('/transaksi/add', 'TransaksiController@hapus');
+    Route::get('/transaksi/monitoring', 'TransaksiController@monitoring');
+    
+    
+    //kuitansi
+    Route::get('/kuitansi/getmaxno', 'KuitansiController@getMaxNokwt');
+    Route::post('/kuitansi/add', 'KuitansiController@add');
+	
+    // buku
+    Route::get('/buku/monitoring', 'BukuController@monitoring');
+
+
+});
+?>

@@ -1,0 +1,162 @@
+<!-- Prevent direct access to .html file -->
+<script>
+	if(typeof app === 'undefined'){
+		document.location.href='index.php';
+	}
+</script>
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1><i class="fa fa-home"></i> Beranda</h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	
+	<div class="row">
+		
+		<div class="col-lg-3">
+			<!-- small box -->
+			<div class="small-box bg-blue">
+				<div class="inner">
+					<h3 id="div-upload">
+						20
+					</h3>
+					<p>
+						Upload
+					</p>
+				</div>
+				<div class="icon">
+					<i class="fa fa-upload"></i>
+				</div>
+				<a href="#" class="small-box-footer">
+					Status Upload
+				</a>
+			</div>
+		</div><!-- ./col -->
+		
+		<div class="col-lg-3">
+			<!-- small box -->
+			<div class="small-box bg-red">
+				<div class="inner">
+					<h3 id="div-upload">
+						30
+					</h3>
+					<p>
+						Proses
+					</p>
+				</div>
+				<div class="icon">
+					<i class="fa fa-refresh"></i>
+				</div>
+				<a href="#" class="small-box-footer">
+					Status Proses
+				</a>
+			</div>
+		</div><!-- ./col -->
+		
+		<div class="col-lg-3">
+			<!-- small box -->
+			<div class="small-box bg-yellow">
+				<div class="inner">
+					<h3 id="div-proses">
+						15
+					</h3>
+					<p>
+						Insert
+					</p>
+				</div>
+				<div class="icon">
+					<i class="fa fa-download"></i>
+				</div>
+				<a href="#" class="small-box-footer">
+					Status Proses Insert
+				</a>
+			</div>
+		</div><!-- ./col -->
+		
+		<div class="col-lg-3">
+			<!-- small box -->
+			<div class="small-box bg-green">
+				<div class="inner">
+					<h3 id="div-selesai">
+						40
+					</h3>
+					<p>
+						Validasi
+					</p>
+				</div>
+				<div class="icon">
+					<i class="fa fa-check"></i>
+				</div>
+				<a href="#" class="small-box-footer">
+					Proses Validasi
+				</a>
+			</div>
+		</div><!-- ./col -->
+		
+	</div>
+	<div class="row">
+		
+		<div class="col-lg-12">
+			<div class="alert alert-danger alert-dismissible fade in" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+				</button>
+				<strong>Notifikasi : </strong> Update aplikasi konversi sudah dapat didownload!
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<div class="alert alert-success alert-dismissible fade in" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+				</button>
+				<strong>Notifikasi : </strong> Silahkan pilih antrian SPM pada hari kerja
+			</div>
+		</div>
+		
+	</div>
+	<div class="row">
+		
+		<div class="col-lg-12">
+			<div id="grafik1"></div>
+		</div>
+		
+	</div>
+	<br>
+	
+</section>
+<script>
+	jQuery(document).ready(function(){
+		
+		jQuery('#grafik1').highcharts({
+			title: {
+				text: 'Grafik Statistik Antrian',
+				x: -20 //center
+			},
+			xAxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+					'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			},
+			yAxis: {
+				title: {
+					text: 'Jumlah'
+				},
+				plotLines: [{
+					value: 0,
+					width: 1,
+					color: '#808080'
+				}]
+			},
+			legend: {
+				layout: 'vertical',
+				align: 'right',
+				verticalAlign: 'middle',
+				borderWidth: 0
+			},
+			series: [{
+				name: '',
+				data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+			}]
+		});
+		
+	});
+</script>

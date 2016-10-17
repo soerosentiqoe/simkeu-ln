@@ -1,0 +1,191 @@
+<!-- Content Header (Page header) -->
+<!--
+<section class="content-header">
+    <h1><i class="fa fa-desktop"></i> UPLOAD PAGU</h1>
+</section>
+-->
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Small boxes (Stat box) -->
+    <!-- <div class="row"> -->
+    <!-- <div class="col-lg-12">	-->
+
+    <!-- <div class="box"> -->
+    <div class="alert alert-success" id="success-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        <div id="waitwindow"></div>
+        
+    </div>
+
+    <div class="panel panel-primary" id="UploadDipa">
+	        
+	<div class="panel-heading">
+            ADK PAGU
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <table id="example" class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label for="JenisAdk">Jenis File : </label>
+                            </td>
+                            <td>
+                                <div class="checkbox" id="JenisAdk">
+                                    <label>
+                                        <input type="checkbox" id="JenisExcel" value="1" onclick="checkboxJenisAdk()"> Excel
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="JenisRkakl" value="2" onclick="checkboxJenisAdk()"> RKAKL DIPA
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="IdAdkRenkas">File : </label>
+                            </td>
+                            <td>
+                                <div id="tempat_file">
+                                    <input type="file" id="filePagu" name="filePagu">
+                                    <input type="hidden" id="idfile" value="" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="tahun">Tahun</label>
+                            </td>
+                            <td>
+                                <select class="form-control" id="tahun" name="tahun">
+                                    <option>2016</option>
+                                    <option>2017</option>
+                                    <option>2018</option>
+                                    <option>2019</option>
+                                    <option>2020</option>
+                                </select>
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+                                <button id="SubmitUploadDipa" type="button" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-danger">Batal</button>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- </div>-->
+    <!-- </div> -->
+    <!-- </div> -->
+</section>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery.extend({
+            getValues: function (url) {
+                var result = null;
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    async: false,
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                return result;
+            }
+        });
+        $("#success-alert").hide();
+	jQuery('#tahun').chosen();
+        var token = $.getValues("token");
+        $("#filePagu").pekeUpload({
+            theme: 'bootstrap',
+            btnText: "Browse...",
+            url: "upload/file?_token=" + token+"&folder=dipa",
+            multi: 'false',
+            showErrorAlerts: 'true',
+            onFileError: function (file, error) {
+		jQuery("#idfile").val(error.idfile);
+                alertify.log(error.message);
+            },
+            onFileSuccess: function (file, data) {
+                jQuery("#idfile").val(data.idfile);
+                alertify.log("file " + file.name + " : berhasil di upload");
+            }
+        });
+        jQuery('#SubmitUploadDipa').click(function () {
+            //bouncing for awhile...
+
+
+            jQuery(this).prop('disabled', true);
+            jQuery(this).html('<span class="loading"><i class="fa fa-refresh"></i> Loading.....</span>');
+            var lanjut = false;
+            var jenisFile = 0;
+            if ($('#JenisExcel').is(":checked")) {
+                lanjut = true;
+                jenisFile = 1;
+            }
+            if ($('#JenisRkakl').is(":checked")) {
+                lanjut = true;
+                jenisFile = 2;
+            }
+            if (jQuery('#idfile').val() != '') {
+                lanjut = true;
+            }
+            if (jQuery('#tahun').val() != '') {
+                lanjut = true;
+            }
+            if (lanjut == true && jenisFile != 0) {
+
+                jQuery.ajax({
+                    url: 'dipa/process',
+                    data: {
+                        jenisFile: jenisFile,
+                        idfile: $('#idfile').val(),
+                        tahun: $('#tahun').val(),
+                        _token: token
+                    },
+                    method: 'POST',
+                    success: function (result) {
+                        if (result.error == false) {
+
+                          
+                            alertify.log(result.message);
+                            jQuery(this).html('<i class="fa fa-lock"></i> Simpan');
+                            jQuery(this).prop('disabled', false);
+                            
+                        } else {
+                            alertify.log(result.message);
+                            
+                        }
+                    },
+                    error: function (result) {
+                        alertify.log('Sesi telah habis. Silahkan refresh halaman browser Anda.');
+                        jQuery(this).html('<i class="fa fa-lock"></i> Sign In');
+                        jQuery(this).prop('disabled', false);
+                    }
+                });
+            } else {
+                alertify.log('Kolom isian tidak dapat dikosongkan!');
+                jQuery(this).html('<i class="fa fa-lock"></i> Simpan');
+                jQuery(this).prop('disabled', false);
+            }
+        });
+
+    });
+
+    function checkboxJenisAdk() {
+        if ($('#JenisExcel').is(":checked")) {
+            $('#JenisRkakl').attr('checked', false);
+        }
+        if ($('#JenisRkakl').is(":checked")) {
+            $('#JenisExcel').attr('checked', false);
+        }
+    }
+</script>

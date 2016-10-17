@@ -1,0 +1,193 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1><i class="fa fa-desktop"></i> UPLOAD SPM</h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Small boxes (Stat box) -->
+    <!-- <div class="row"> -->
+    <!-- <div class="col-lg-12">	-->
+
+    <!-- <div class="box"> -->
+
+    <div class="panel panel-primary" id="UploadDipa">
+        <div class="panel-heading">
+            ADK SPM
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <table id="example" class="table table-bordered table-striped">
+                    <tbody>
+                     
+                       
+                        <tr>
+                            <td>
+                                <label for="tahun">Tahun</label>
+                            </td>
+                            <td>
+                                <select class="form-control" id="tahun">
+                                    <option>2016</option>
+                                    <option>2017</option>
+                                    <option>2018</option>
+                                    <option>2019</option>
+                                    <option>2020</option>
+                                </select>
+                        </tr>
+                          <tr>
+                            <td>
+                                <label for="bulan">Bulan</label>
+                            </td>
+                            <td>
+                                <select class="form-control" id="bulan">
+                                    <option value="01">Januari</option>
+                                    <option value="02">Pebruari</option>
+                                    <option value="03">Maret</option>
+                                    <option value="04">April</option>
+                                    <option value="05">Mei</option>
+                                     <option value="06">Juni</option>
+                                    <option value="07">Juli</option>
+                                    <option value="08">Agustus</option>
+                                    <option value="09">September</option>
+                                    <option value="10">Oktober</option>
+                                     <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                        </tr>
+                         <tr>
+                            <td>
+                                <label for="fileSpm">File : </label>
+                            </td>
+                            <td>
+                                <div id="tempat_file">
+                                    <input type="file" id="fileSpm" name="fileSpm">
+                                    <input type="hidden" id="idfile" value="" />
+                                </div>
+                            </td>
+                        </tr>
+                           <tr>
+                            <td>
+                                
+                            </td>
+                            <td>
+                                <button id="SubmitUploadSpm" type="button" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-danger">Batal</button>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- </div>-->
+    <!-- </div> -->
+    <!-- </div> -->
+</section>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery.extend({
+            getValues: function (url) {
+                var result = null;
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    async: false,
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                return result;
+            }
+        });
+
+        var token = $.getValues("token");
+        $("#fileSpm").pekeUpload({
+            theme: 'bootstrap',
+            btnText:        "Browse...",
+            allowedExtensions:"zip",
+            url: "/simkeu/upload/dipa?_token=" + token+"&folder=spm",
+            multi: 'false',
+            showErrorAlerts: 'true',
+            onFileError: function (file, error) {
+                alertify.log(error.message);
+            },
+            onFileSuccess: function (file, data) {
+                jQuery("#idfile").val(data.idfile);
+                alertify.log("file " + file.name + " : berhasil di upload");
+            }
+        });
+        jQuery('#SubmitUploadSpm').click(function(){				
+					//bouncing for awhile...		
+				
+					jQuery(this).prop('disabled',true);
+					jQuery(this).html('<span class="loading"><i class="fa fa-refresh"></i> Loading.....</span>');
+					var lanjut=false;
+                    var jenisFile=0;
+					
+					if(jQuery('#idfile').val()!=''){
+						lanjut=true;
+					}
+                    if(jQuery('#tahun').val()!=''){
+						lanjut=true;
+					}
+                    if(jQuery('#bulan').val()!=''){
+						lanjut=true;
+					}
+					if(lanjut==true ){
+						
+						jQuery.ajax({
+							url:'process/spm',
+							data:{ jenisFile : jenisFile,
+                                 idfile :$('#idfile').val(),
+                                 tahun :$('#tahun').val(),
+                                  bulan :jQuery('#bulan').val(),
+                                 _token : token},
+							method:'POST',
+							success:function(result){
+								/*if(result.error==false){
+									alertify.log('Upload Berhasil');
+									jQuery(this).html('<i class="fa fa-lock"></i> Sign In');
+									jQuery(this).prop('disabled', false);
+									//window.location.href='./';
+								}
+								else{
+									alertify.log(result.message);
+									jQuery(this).html('<i class="fa fa-lock"></i> Sign In');
+									jQuery(this).prop('disabled', false);
+								}*/
+                                 //var table=array('Tabel Info','Tabel MAK','Tabel MAP','Tabel Detail MAK','Tabel Induk');
+                                //var html ="<table><th><td>Data</td><td>Hasil</td></th> ";
+                                if (result.data ){
+                                   $.each(result.data, function(i, item) {
+                                       // var html1 =html +"<tr><td>"+item.name_file+"<td>"+item.num_record+"</tr>";
+                                       alertify.log('Data :'+item.name_file+' : Record '+item.num_record);
+                                    });
+                                    
+                                }
+                                 //var html2 = html1 +"</table>";
+                                jQuery(this).html('<i class="fa fa-lock"></i> Simpan');
+								jQuery(this).prop('disabled', false);
+                                //alertify.log(html2);
+                                
+                                
+                                
+							},
+							error:function(result){
+								alertify.log('Sesi telah habis. Silahkan refresh halaman browser Anda.');
+								jQuery(this).html('<i class="fa fa-lock"></i> Simpan');
+								jQuery(this).prop('disabled', false);
+							}
+						});
+					}
+					else{
+						alertify.log('Kolom isian tidak dapat dikosongkan!');
+						jQuery(this).html('<i class="fa fa-lock"></i> Simpan');
+						jQuery(this).prop('disabled', false);
+					}
+				});
+       
+    });
+    
+    	
+</script>

@@ -1,0 +1,346 @@
+<!-- Content Header (Page header) -->
+<!--
+<section class="content-header">
+	<h1><i class="fa fa-list"></i> RUH SALDO AWAL</h1>
+</section>
+-->
+
+<!-- Main content -->
+<section class="content">
+	
+	<div class="row" id="div-form">
+		<div class="col-lg-12">
+			
+			<div class="box box-solid box-primary">
+				<div class="box-header">
+					<h3 class="box-title"><i class="fa fa-pencil"></i> RUH USER</h3>
+				</div><!-- /.box-header -->
+				<div class="box-body">					
+					
+					<form id="form-ruh" name="form-ruh" class="form-horizontal">
+						<input type="hidden" id="inp-id" name="inp-id">
+						<input type="hidden" id="inp-rekambaru" name="inp-rekambaru">
+						<input type="hidden" id="_token" name="_token">
+						<div class="box-body">
+							<div class="form-group" id="div-satker">
+								<label class="control-label col-lg-3">Satuan Kerja</label>
+								<div class="col-lg-5">
+									<select id="kdsatker" name="kdsatker" class="form-control chosen" data-placeholder="Pilih Satuan Kerja"></select>
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-kdsatker" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+
+						  <div class="form-group" id="div-kdlevel">
+								<label class="control-label col-lg-3">Kewenangan</label>
+								<div class="col-lg-5">
+									<select id="kdlevel" name="kdlevel" class="form-control chosen" data-placeholder="Pilih Kewenangan"></select>
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-kdlevel" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-lg-3">username</label>
+								<div class="col-lg-4">
+									<input id="username" name="username" class="form-control">
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-username" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label class="control-label col-lg-3">Password</label>
+								<div class="col-lg-4">
+									<input type="password" id="password" name="password" class="form-control">
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-password" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+                        <div class="form-group">
+								<label class="control-label col-lg-3">Nama</label>
+								<div class="col-lg-4">
+									<input id="nama" name="nama" class="form-control">
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-nama" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+                        <div class="form-group">
+								<label class="control-label col-lg-3">NIP</label>
+								<div class="col-lg-4">
+									<input id="nip" name="nip" class="form-control">
+								</div>
+								<div class="col-lg-2">
+									<span id="warning-nip" class="label label-warning warning">Required!</span>
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label class="control-label col-lg-3"></label>
+								<div class="col-lg-5">
+									<button title="Simpan Data Ini?" id="simpan" type="button" class="btn btn-primary">Simpan</button>
+									<button title="Batal"  id="batal" type="button" class="btn btn-danger">Batal</button>
+								</div>
+							</div>
+						</div><!-- /.box-body -->
+					</form>
+					
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+			
+		</div>
+	</div>
+	
+	<!-- Small boxes (Stat box) -->
+	<div class="row" id="div-tabel">
+		<div class="col-lg-12">			
+			<div class="box box-solid box-primary">
+				<div class="box-header">
+					<h3 class="box-title"><i class="fa fa-calendar"></i> Data User</h3>
+					<div class="box-tools pull-right" id="div-tambah" style="">
+						<button title="Tambah Data" type="button" class="btn btn-primary" id="tambah"><i class="fa fa-plus"></i></button>
+					</div>
+				</div><!-- /.box-header -->
+				<div class="box-body table-responsive" style="overflow-x:scroll;">					
+					<table id="tabel-ruh" class="table table-hover">
+						<thead>
+							<tr>
+								<th>Username</th>
+								<th>Nama</th>
+								<th>NIP</th>
+								<th>Level</th>
+                                <th>Aksi</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+			
+		</div>
+	</div>
+	
+</section>
+<script>
+jQuery(document).ready(function() {
+    
+    
+    //aktivasi chosen
+		jQuery('.chosen').chosen();
+				
+		//ref kewenangan
+		jQuery.get('dropdown/getkdsatker', function(result){
+			jQuery('#kdsatker').html(result).trigger('chosen:updated');
+		});
+		jQuery.get('dropdown/getkdlevel', function(result){
+			jQuery('#kdlevel').html(result).trigger('chosen:updated');
+		});
+    
+    //data tabel
+		var table=jQuery('#tabel-ruh').DataTable({
+			bProcessing:true,
+			oLanguage:{
+				"sProcessing":   "<center><h3>Sedang proses....</h3></center>",
+				"sLengthMenu":   "Tampilan _MENU_ entri",
+				"sZeroRecords":  "Tidak ditemukan data yang sesuai",
+				"sInfo":         "Tampilan _START_ sampai _END_ dari _TOTAL_ entri",
+				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
+				"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+				"sInfoPostFix":  "",
+				"sSearch":       "Cari:",
+				"sUrl":          "",
+				"oPaginate": {
+				  "sFirst":    "Awal",
+				  "sPrevious": "Sebelum",
+				  "sNext":     "Sesudah",
+				  "sLast":     "Akhir"
+				}
+			},
+			aaSorting: [],
+			bServerSide: true,
+			sAjaxSource: "user/monitoring"
+		});
+	
+
+	function form_valid(str_id) {
+		var arr_id = str_id.split(',');
+		var lanjut = true;
+		for(x = 0; x < arr_id.length; x++) {
+			if (jQuery('#'+arr_id[x]).val() == '') {
+				jQuery('#warning-'+arr_id[x]).show();
+				lanjut = false;
+			}
+		}
+		return lanjut;
+	}
+	
+	function cari_data(id) {
+		jQuery('input,textarea').val('');
+		//jQuery('.chosen').val('').trigger('chosen:updated');
+        jQuery.getJSON('user/cari/'+id, function(result){
+        if(result.error == false) {           
+            jQuery('#inp-id').val(id);
+            jQuery('#inp-rekambaru').val('0'); 
+            jQuery('#kdsatker').val(result.data[0].kdsatker).trigger('chosen:updated'); 
+            jQuery('#kdlevel').val(result.data[0].kdlevel).trigger('chosen:updated'); 
+            jQuery('#username').val(result.data[0].username);
+            jQuery('#nama').val(result.data[0].nama);
+            jQuery('#nip').val(result.data[0].nip);         
+            jQuery('#div-form').show();
+            
+        }
+    });
+		
+	}
+	
+	function form_default() {
+		jQuery('input,textarea').val('');
+		jQuery('.chosen').val('').trigger('chosen:updated');
+		jQuery('#div-form,.warning').hide();
+		jQuery('#div-tabel').show();
+		
+	}
+	
+	form_default();
+	
+	jQuery('#tambah').click(function() {
+		jQuery('#inp-rekambaru').val('1');
+		jQuery('#kdsatker').prop('disabled',false);
+		jQuery('#kdlevel').prop('disabled',false); 
+		jQuery('#username').prop('disabled',false); 
+		jQuery('#div-tabel').hide();
+		jQuery('#div-form').fadeIn();
+	});
+	
+	jQuery('#batal').click(function() {
+		form_default();
+	});
+	
+	jQuery('body').off('click', '.ubah').on('click', '.ubah', function() {
+		var id = this.id;
+		cari_data(id);
+		jQuery('#div-tabel').hide();
+		jQuery('#inp-id').val(id);
+		jQuery('#inp-rekambaru').val('0');  
+		jQuery('#kdsatker').prop('disabled',true);
+		jQuery('#kdlevel').prop('disabled',true); 
+		jQuery('#username').prop('disabled',true);     
+        jQuery('#simpan').prop('disabled', false);
+        table.ajax.reload();
+	});
+	
+	
+	
+	jQuery('#simpan').click(function() {
+		jQuery('#simpan').html('<span class="loading"><i class="fa fa-refresh"></i> Sedang proses.....</span>');
+		jQuery('#simpan').prop('disabled',true);
+		var lanjut = form_valid('kdsatker,kdlevel,username,password,nama,nip');
+		if(lanjut == true) {
+			jQuery.get('token', function(token) {
+				if (token) {
+					jQuery('#_token').val(token);
+					var data = jQuery('#form-ruh').serialize();
+					if (jQuery('#inp-rekambaru').val() == '1') {
+						jQuery.ajax({
+							url    : 'user/add',
+							method : 'POST',
+							data   : data,
+							success:function(result) {
+								if (result.error == false) {
+									jQuery('#simpan').html('Simpan');
+									jQuery('#simpan').prop('disabled',false);
+									alertify.log('Proses simpan berhasil');
+									form_default();
+									table.ajax.reload();
+								} else {
+									jQuery('#simpan').html('Simpan');
+									jQuery('#simpan').prop('disabled',false);
+									alertify.log(result.message);
+								} 
+							},
+							error:function(result) {
+								jQuery('#simpan').html('Simpan');
+								jQuery('#simpan').prop('disabled',false);
+								alertify.log('Koneksi pada aplikasi/database terputus. Hubungi Administrator.');
+							}
+						})
+					} else {
+						jQuery.ajax({
+							url    : 'user/add',
+							method : 'PUT',
+							data   : data,
+							success:function(result) {
+								if (result.error == false) {
+									jQuery('#simpan').html('Simpan');
+									jQuery('#simpan').prop('disabled',false);
+									alertify.log('Proses simpan berhasil.');
+									form_default();
+									table.ajax.reload();
+								} else {
+									jQuery('#simpan').html('Simpan');
+									jQuery('#simpan').prop('disabled',false);
+									alertify.log(result.message);
+								} 
+							},
+							error:function(result){
+								jQuery('#simpan').html('Simpan');
+								jQuery('#simpan').prop('disabled',false);
+								alertify.log('Koneksi pada aplikasi/database terputus. Hubungi Administrator.');
+							}
+						})
+					} 
+				} else {
+					jQuery('#simpan').html('Simpan');
+					jQuery('#simpan').prop('disabled',false);
+					alertify.log('Proses simpan gagal. Silahkan refresh halaman browser anda.');
+				} 
+			});
+		} else {
+			jQuery('#simpan').html('Simpan');
+			jQuery('#simpan').prop('disabled',false);
+			alertify.log('Kolom tidak boleh dikosongkan!');
+		} 
+	});
+	
+	jQuery('body').off('click', '.hapus').on('click', '.hapus', function() {
+		var id = this.id;
+		alertify.confirm('Hapus data ini?', function(c) {
+			if (c) {
+				jQuery.get('token', function(token) {
+					if (token) {
+						jQuery.ajax({
+							url    : 'user/add',
+							method : 'delete',
+							data   : {
+										_token:token, 
+										id:id
+									},
+							success:function(result) {
+								if (result.error== false) {
+									alertify.log(result.message);
+									table.ajax.reload();
+								} else {
+									alertify.log(result.message);
+								} 
+							},
+							error:function(result) {
+								alertify.log(result.message);
+							}
+						});
+					} else {
+						alertify.log('Proses hapus gagal. Silahkan refresh halaman browser anda.');
+					} 
+				});
+			} 
+		});
+	});
+	
+});
+</script>

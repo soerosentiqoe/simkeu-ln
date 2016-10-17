@@ -1,0 +1,217 @@
+<?php namespace App\Http\Controllers;
+
+use DB;
+use Input;
+use Session;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use ZipArchive;
+use Excel;
+use App\Http\Controllers\AppModelController;
+
+class DipaController extends AppModelController {
+
+	public function __construct()
+	{
+		//$this->middleware('auth');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		
+	}
+     public function process(Request $request) {
+                 
+         $id=$request->input('idfile');
+        $dataFile=$this->getFirstRowByWhere('T_FILE',['ID'=>$id],'strorage');
+	//echo $dataFile;
+         $data=Excel::load($dataFile, function($reader) {
+             $results = $reader->get();
+             return $results;                
+            });
+         $results=$data->parsed;
+        // print_r($results);
+         foreach($results as $result) {
+             if ($result->level=='7') {
+                     $session=Session::all();
+                     $ip=$_SERVER['REMOTE_ADDR'];
+                    $data=['thang'=>$result->thang,'kdindex'=>$result->kdindex,'kdsatker'=>$result->kdsatker];
+                 if (session('kdsatker')==$result->kdsatker || session('thang') == $result->thang) {
+                        $cekExist=$this->getFirstRowByWhere('t_pagu',$data,'id');
+                      if ($cekExist != 0 ) {
+				//echo "1";
+                         $data=array ('nokarwas'=>$result->nokarwas,'kddept'=>$result->kddept,'kdunit'=>$result->kdunit,'kdprogram'=>$result->kdprogram,'kdgiat'=>$result->kdgiat,'kdoutput'=>$result->kdoutput,'kdsoutput'=>$result->kdsoutput,'kdkmpnen'=>$result->kdkmpnen,'kdskmpnen'=>$result->kdskmpnen,'kdakun'=>$result->jnsbel,'kdbeban'=>$result->kdbeban,'kdkppn'=>$result->kdkppn,'register'=>$result->register,'kdlokasi'=>$result->kdlokasi,'kdkabkota'=>$result->kdkabkota,'kddekon'=>$result->kddekon,'kdjendok'=>$result->kdjendok,'kdjnsban'=>$result->kdjnsban,'kdctarik'=>$result->kdctarik,'kdsdana'=>$result->kdsdana,'paguakhir'=>$result->paguakhir,'nilblokir'=>$result->nilblokir,'id_file'=>$request->input('idfile'),'updated_id'=>$session['id'],'updated_ip'=>$ip);
+                          $where=['id'=>$cekExist];
+                          $this->updateData('t_pagu',$data,$where);
+
+                     } else {
+			//echo "0";
+                         $data=array ('kdsatker'=>$result->kdsatker,'thang'=>$result->thang,'nokarwas'=>$result->nokarwas,'kddept'=>$result->kddept,'kdunit'=>$result->kdunit,'kdprogram'=>$result->kdprogram,'kdgiat'=>$result->kdgiat,'kdoutput'=>$result->kdoutput,'kdsoutput'=>$result->kdsoutput,'kdkmpnen'=>$result->kdkmpnen,'kdskmpnen'=>$result->kdskmpnen,'kdakun'=>$result->jnsbel,'kdbeban'=>$result->kdbeban,'kdkppn'=>$result->kdkppn,'register'=>$result->register,'kdlokasi'=>$result->kdlokasi,'kdkabkota'=>$result->kdkabkota,'kddekon'=>$result->kddekon,'kdjendok'=>$result->kdjendok,'kdjnsban'=>$result->kdjnsban,'kdctarik'=>$result->kdctarik,'kdsdana'=>$result->kdsdana,'paguakhir'=>$result->paguakhir,'nilblokir'=>$result->nilblokir,'id_file'=>$request->input('idfile'),'kdindex'=>$result->kdindex,'created_id'=>$session['id'],'created_ip'=>$ip);
+                          $this->saveData($data,'t_pagu');
+                     }
+
+                 } else {
+
+                     return response()->json(array('error'=>true,'message'=>'Kode satker atau tahun tidak sama')); 
+                 }
+             }
+
+         }
+         return response()->json(array('error'=>false,'message'=>'berhasil insert','data'=>$data));
+     }
+    
+    
+     public function getPaguRealisasi(Request $request) {		 
+		$where=$where=['kdsatker'=>session('kdsatker'),'thang'=>session('thang'),'kdprogram'=>$request->input('kdprogram'),'kdgiat'=>$request->input('kdgiat'),'kdoutput'=>$request->input('kdoutput'),'kdsoutput'=>$request->input('kdsoutput'),'kdkmpnen'=>$request->input('kdkmpnen'),'kdskmpnen'=>$request->input('kdskmpnen'),'kdakun'=>$request->input('kdakun')];    
+         return response()->json(array('error'=>false,'paguakhir'=>$this->getFirstRowByWhere('v_kdakun',$where,'paguakhir'),'nilblokir'=>$this->getFirstRowByWhere('v_kdakun',$where,'nilblokir'),'real_spm'=>$this->getFirstRowByWhere('v_realisasi_spm',$where,'nilmak'),'real_kwt'=>$this->getFirstRowByWhere('v_realisasi_kwt',$where,'real_kwt')));
+         }
+         public function getPaguRealisasiPerOutput(Request $request){
+			$table="v_realisasi_spm_per_output";
+			$table1="v_output";
+			$where=['kdgiat'=>$request->input('kdgiat'),'kdoutput'=>$request->input('kdoutput')];
+			return response()->json(['error'=>false,'paguakhir'=>DB::table($table1)->where($where)->select('sum(paguakhir) as paguakhir')->groupBy('kdgiat,kdoutput')->get(),'nilblokir'=>DB::table($table1)->where($where)->select('sum(nilblokir) as nilblokir')->groupBy('kdgiat,kdoutput')->get(),'real'=>DB::table($table)->where($where)->select('sum(nilmak) as nilmak')->groupBy('kdgiat,kdoutput')->get()]);
+		 }
+		 
+    
+    public function getDetailKdakun(Request $request) {
+         $where=['kdsatker'=>session('kdsatker'),'thang'=>session('thang'),'kdprogram'=>$request->input('kdprogram'),'kdgiat'=>$request->input('kdgiat'),'kdoutput'=>$request->input('kdoutput'),'kdsoutput'=>$request->input('kdsoutput'),'kdkmpnen'=>$request->input('kdkmpnen'),'kdskmpnen'=>$request->input('kdskmpnen'),'kdakun'=>$request->input('kdakun')];        
+        return response()->json(['error'=>false,'jumlah'=>$this->getCountByWhere('v_kdakun',$where),'data'=>DB::table('v_kdakun')->where($where)->get()]);
+             
+         
+        
+    }
+    
+    
+    
+    
+    
+    
+    public function monitoring()
+	{
+		$aColumns = array('kdprogram','kdgiat','kdoutput','kdsoutput','kdkmpnen','kdskmpnen','kdakun','paguakhir','nilblokir');
+		/* Indexed column (used for fast and accurate table cardinality) */
+		$sIndexColumn = "*";
+        $sTable="v_rollup_pagu";
+		
+		
+		/*
+		 * Paging
+		 */ 
+		$sLimit = " ";
+		if((isset($_GET['iDisplayStart']))&&(isset($_GET['iDisplayLength']))){
+			$iDisplayStart=$_GET['iDisplayStart']+1;
+			$iDisplayLength=$_GET['iDisplayLength'];
+			$sSearch=$_GET['sSearch'];
+			if (($sSearch=='') && (isset( $iDisplayStart )) &&  ($iDisplayLength != '-1' )) 
+			{
+				$iDisplayEnd=$iDisplayStart+$iDisplayLength-1;
+				$sLimit = " WHERE NO BETWEEN '$iDisplayStart' AND '$iDisplayEnd'";
+			}
+		}
+		
+		/*
+		 * Ordering
+		 */
+		$sOrder = " ";
+		if((isset($_GET['iSortCol_0']))&&(isset($_GET['sSortDir_0']))){
+			$iSortCol_0=$_GET['iSortCol_0'];
+			$iSortDir_0=$_GET['sSortDir_0'];
+			if ( isset($iSortCol_0  ) )
+			{		
+				//modified ordering
+				for($i=0;$i<count($aColumns);$i++){
+					if($iSortCol_0==$i){
+						if($iSortDir_0=='asc'){
+							$sOrder = " ORDER BY ".$aColumns[$i]." DESC ";
+						}
+						else{
+							$sOrder = " ORDER BY ".$aColumns[$i]." ASC ";
+						}
+					}
+				}
+			}
+		}
+       // $sOrder = " ORDER BY lvl,kdprogram,kdgiat,kdoutput,kdsoutput,kdkmpnen,kdskmpnen,kdakun ASC";
+		
+		//modified filtering
+		$sWhere=" WHERE kdsatker ='".session('kdsatker')."' and thang='".session('thang')."'";
+		if(isset($_GET['sSearch'])){
+			$sSearch=$_GET['sSearch'];
+			if((isset($sSearch))&&($sSearch!='')){
+				$sWhere .=" and (kdakun like '".$sSearch."%' or kdoutput like '%".$sSearch."%' )";
+			}
+		}
+		
+		/* Data set length after filtering */
+		$iFilteredTotal = 0;
+		$rows = DB::select("SELECT COUNT(*) as JUMLAH FROM ".$sTable." ".$sWhere." ");
+		
+		$result = (array)$rows[0];
+		if($result){
+			$iFilteredTotal = $result['jumlah'];
+		}
+		
+		/* Total data set length */
+		$iTotal = 0;
+		$rows = DB::select("
+			SELECT COUNT(".$sIndexColumn.") as JUMLAH FROM ".$sTable." ".$sWhere." ");
+		$result = (array)$rows[0];
+		if($result){
+			$iTotal = $result['jumlah'];
+		}
+
+		/*
+		 * Format Output
+		 */
+		$sEcho="";
+		if(isset($_GET['sEcho'])){
+			$sEcho=$_GET['sEcho'];
+		}
+		$output = array(
+			"sEcho" => intval($sEcho),
+			"iTotalRecords" => $iTotal,
+			"iTotalDisplayRecords" => $iFilteredTotal,
+			"aaData" => array()
+		);
+		
+		$str=str_replace(" , ", " ", implode(", ", $aColumns));
+        
+		
+		$sQuery = "SELECT * FROM ( SELECT ROWNUM AS NO,".$str." FROM ( SELECT * FROM (".$sTable.") ".$sOrder.") ".$sWhere." ) a ".$sLimit." ";
+		//echo $sQuery;
+		$rows = DB::select($sQuery);
+		
+		
+		foreach( $rows as $row )
+		{            
+		
+	
+		$kdgiat=$row->kdgiat == NULL ?'':'.'.$row->kdgiat;
+		$kdoutput=$row->kdoutput ==NULL ?'':'.'.$row->kdoutput;
+		$kdsoutput=$row->kdsoutput == NULL ? '':'.'.$row->kdsoutput;
+		$kdkmpnen=$row->kdkmpnen == NULL ? '':'.'.$row->kdkmpnen;
+            $uraian=$row->kdprogram.'.'.$row->kdgiat.'.'.$row->kdoutput.'.'.$row->kdsoutput.'.'.$row->kdkmpnen.'.'.$row->kdskmpnen.'.'.$row->kdakun;
+            $sisa_dana=($row->paguakhir)-($row->nilblokir);
+			$output['aaData'][] = array(
+				
+                $uraian,
+                number_format($row->paguakhir),
+                number_format($row->nilblokir),
+                number_format($sisa_dana)
+                
+			);
+		}
+		
+		return response()->json($output);
+	}
+    
+  
+	
+	
+
+}
