@@ -1,2 +1,3 @@
 # SIMKEU APP
-This application consists of some modules to serve our stakeholders
+framework : Laravel 5.0
+Database : Oracle Database
