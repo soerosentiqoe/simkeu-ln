@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
 	<title><?php echo $app_name.' v.'.$app_versi; ?></title>
-	<?php $header_ico="/template/img/header_".$app_name.".ico"; ?>
+
+    
 	<!--
 	<link href="{{ asset('/template/img/header_simkeu_app.ico')}}" rel="icon" type="image/x-icon" />
 	-->
@@ -11,7 +12,7 @@
 	<meta name="author" content="<?php echo $app_author;?>">
 	<meta name="keyword" content="<?php echo $app_keyword;?>">
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-	<link href="{{ asset('/template/img/favicontil.ico')}}" rel="icon" type="image/x-icon" />
+	<link href="{{ asset('/template/img/header_simkeu_app.ico')}}" rel="icon" type="image/x-icon" />
 	<link href="{{ asset('/template/css/bootstrap/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
 	<link href="{{ asset('/template/font-awesome-4.2.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
 	<link href="{{ asset('/template/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -114,14 +115,7 @@
 			<!-- sidebar: style can be found in sidebar.less -->
 			<section class="sidebar" >
 				<!-- Sidebar user panel -->
-				<div class="user-panel">
-					<div class="pull-left image">
-						<img src="data/user/<?php echo $info_foto; ?>" class="img-circle" alt="User Image" />
-					</div>
-					<div class="pull-left info">
-						<a href="#"><i class="fa fa-circle text-success"></i> <?php echo $info_nmlevel; ?></a>
-					</div>
-				</div>
+				
 				<div class="user-panel" >
 					<?php echo $info_nmkantor; ?>
 				</div>

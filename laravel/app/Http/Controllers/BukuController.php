@@ -11,7 +11,9 @@ use App\Http\Controllers\AppModelController;
 
 class BukuController extends AppModelController {
 
-	
+	var $table="d_buku_kemlu";
+	var $view="v_buku_kemlu";
+    var $view_distinct_kdvalas='v_distinct_kdvalas_buku';
 	public function __construct()
 	{
 		
@@ -25,7 +27,33 @@ class BukuController extends AppModelController {
 	public function index()
 	{
     }
-		    
+		
+    public function dropdownDistinctKdvalas(Request $request){
+        $rows=DB::table($this->view_distinct_kdvalas)
+                     ->select('KDVALAS')
+                    ->where(['thang'=>session('thang'),'kdsatker'=>session('kdsatker'),'bulan'=>$request->input('bulan')])
+                    ->get();
+                $htmlout = '<option value="" style="display:none;">Pilih Valas</option>';
+                foreach($rows as $row) {
+                  
+                      $htmlout .= '<option value="'.$row->kdvalas.'">'.$row->kdvalas.'</option>';
+                }
+                echo $htmlout;
+    }
+    public function hitungBukuLpj(Request $request){
+        $rows=DB::table('v_saldo_buku_penambahan t1')
+            ->leftJoin('t_jenbuku_kemlu t2','t1.id_jenbuku','=','t2.id')
+            ->leftJoin(DB::raw('(SELECT ID_JENBUKU,SUM(SALDO) AS SALDO FROM V_SALDO_BUKU_PER_BULAN WHERE BULAN < '.$request->input('bulan').' GROUP BY ID_JENBUKU) t3'),function($join){
+                $join->on('t1.id_jenbuku','=','t3.id_jenbuku');                
+            })
+            ->leftJoin(DB::raw('(SELECT ID_JENBUKU,SUM(SALDO) AS SALDO FROM V_SALDO_BUKU_PER_BULAN WHERE BULAN <= '.$request->input('bulan').' GROUP BY ID_JENBUKU) t4'),function($join){
+                $join->on('t1.id_jenbuku','=','t4.id_jenbuku');
+            })
+            ->select('t1.id_jenbuku','t2.nmbuku','t1.kdvalas','t3.saldo AS saldoawal','t1.penambahan','t1.pengurangan','t4.saldo as saldoakhir')
+            ->where(['t1.bulan'=>$request->input('bulan')])
+            ->get();
+        return response()->json(['data'=>$rows]);
+    }
     
     
     public function monitoring()

@@ -103,7 +103,7 @@
               var percent = 100;
               obj.next('a').next('div').find('.pekeup-progress-bar:first').width(percent+'%');
                 obj.next('a').next('div').find('.pekeup-progress-bar:first').text(percent+"%");
-                if (data==1){
+                if (data.error==false){
                   if (options.multi==false){
                     obj.attr('disabled','disabled');
                   }

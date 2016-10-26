@@ -1,12 +1,10 @@
 <!-- Content Header (Page header) -->
-<!--
 <section class="content-header">
 	<h1><i class="fa fa-desktop" data-toggle="collapse" data-target="#collapse1"></i> PAGU DIPA</h1>
 		<div id="collapse1" class="collapse">
 			PAGU DIPA
 		</div>
 </section>
--->
 
 <!-- Main content -->
 <section class="content">
@@ -72,7 +70,7 @@
 		});
 		
 		jQuery('#refresh').click(function(){
-			table.ajax.url("dipa/monitoring").load();
+			table.ajax.url("monitoring/dipa").load();
 		});
 		
 	});

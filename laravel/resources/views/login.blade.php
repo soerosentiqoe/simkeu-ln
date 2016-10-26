@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="footer">                                                               
-                    <button id="submit" type="submit" class="btn btn-block bg-blue"><i class="fa fa-arrow-circle-right"></i> Sign In</button>
+                    <button id="submit" type="submit" class="btn btn-block bg-black"><i class="fa fa-arrow-circle-right"></i> Log In</button>
 					<br>
 					<!--
 					<center>

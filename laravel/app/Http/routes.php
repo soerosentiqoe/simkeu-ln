@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/dropdown/getgroupmenu', 'DropdownController@getGroupMenu');
     Route::get('/dropdown/getmenu', 'DropdownController@getMenu');
     Route::get('/dropdown/getjenissppgu', 'DropdownController@getJenisSppGu');
+    Route::get('/dropdown/getdistinctkdvalasbuku', 'BukuController@dropdownDistinctKdvalas');
     
     
     //routes saldoawal
@@ -109,6 +110,13 @@ Route::group(['middleware' => 'auth'], function(){
 	
     // buku
     Route::get('/buku/monitoring', 'BukuController@monitoring');
+    Route::get('/buku/hitungbukulpj', 'BukuController@hitungBukuLpj');
+    // BA Pengeluaran
+    Route::post('/bak/add', 'BakController@add');
+    Route::get('/bak/monitoring', 'BakController@monitoring');
+    Route::get('/bak/cari/{id}', 'BakController@getDataById');
+    Route::put('/bak/add', 'BakController@ubah');
+    Route::delete('/bak/add', 'BakController@hapus');
     
     //Referensi
     //User
@@ -122,6 +130,12 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/rulemenu/add', 'RuleGroupMenuController@add');   
     Route::get('/rulemenu/cari/{id}', 'RuleGroupMenuController@getDataById');   
     Route::delete('/rulemenu/add', 'RuleGroupMenuController@hapus');
+    // pejabat
+    Route::post('/pejabat/add', 'PejabatController@add');
+    Route::get('/pejabat/monitoring', 'PejabatController@monitoring');
+    Route::get('/pejabat/cari/{id}', 'PejabatController@getDataById');
+    Route::put('/pejabat/add', 'PejabatController@ubah');
+    Route::delete('/pejabat/add', 'PejabatController@hapus');
     
 	
 
