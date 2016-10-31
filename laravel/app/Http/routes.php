@@ -72,6 +72,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/dropdown/getmenu', 'DropdownController@getMenu');
     Route::get('/dropdown/getjenissppgu', 'DropdownController@getJenisSppGu');
     Route::get('/dropdown/getdistinctkdvalasbuku', 'BukuController@dropdownDistinctKdvalas');
+    Route::get('/dropdown/getpejabat','DropdownController@getPejabat');
     
     
     //routes saldoawal
@@ -107,10 +108,12 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/kuitansi/getmaxno', 'KuitansiController@getMaxNokwt');
     Route::get('/kuitansi/monitoring', 'KuitansiController@monitoring');
     Route::post('/kuitansi/add', 'KuitansiController@add');
+    Route::get('/kuitansi/getkuitansigu','KuitansiController@getKuitansiGu');
 	
     // buku
     Route::get('/buku/monitoring', 'BukuController@monitoring');
     Route::get('/buku/hitungbukulpj', 'BukuController@hitungBukuLpj');
+    Route::get('/buku/maxnobuku', 'BukuController@maxNoBuku');
     // BA Pengeluaran
     Route::post('/bak/add', 'BakController@add');
     Route::get('/bak/monitoring', 'BakController@monitoring');

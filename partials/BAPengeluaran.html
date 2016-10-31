@@ -13,6 +13,7 @@
 						<input type="hidden" id="inp-id" name="inp-id">
 						<input type="hidden" id="inp-rekambaru" name="inp-rekambaru">
 						<input type="hidden" id="_token" name="_token">
+                        <input type="hidden" id="jml_buku" name="jml_buku">
 						<div class="box-body">
 							<div class="panel panel-default">                                  
                                   <div class="panel-heading">
@@ -34,15 +35,9 @@
                                 
                                     </div>
                                   <div class="panel-body">
-                                      <style>
-                                        th {
-                                                background-color: blue;
-                                                color: white;
-                                            }
-                                      </style>
                                        
                                           <table id="tabel_lpj_detail" class="table table-hover">
-											<thead>
+											<thead class='bg-blue'>
 												<tr>
 													<th>Buku</th>
 													<th>valas</th>
@@ -192,6 +187,7 @@ jQuery(document).ready(function() {
 		jQuery.get('dropdown/getbulan', function(result){
 			jQuery('#bulan').html(result).trigger('chosen:updated');
 		});
+        jQuery.get('dropdown/getpejabat',function(result){jQuery('#pejabat1').html(result).trigger('chosen:updated');jQuery('#pejabat2').html(result).trigger('chosen:updated');});
         jQuery('#bulan').on('change',function(){
             var data ={ bulan : this.value};
             jQuery.get('dropdown/getdistinctkdvalasbuku',data,function(result){
@@ -205,9 +201,12 @@ jQuery(document).ready(function() {
             var data = { bulan : $('#bulan').val()};
             jQuery.get('buku/hitungbukulpj',data,function(result){
                 $('#tabel_lpj_detail > tbody  ').html('');
+                var jumlah =result.data.length;
+                $('#jml_buku').val(jumlah-1);
                 if (result.data.length > 0) {								
 								for (var item in result.data ) {
-									var html='<tr><td>'+result.data[item].nmbuku+'</td><td>'+result.data[item].kdvalas+'</td><td>'+result.data[item].saldoawal+'</td><td>'+result.data[item].penambahan+'</td><td>'+result.data[item].pengurangan+'</td><td>'+result.data[item].saldoakhir+'</td></tr>';
+                                    var input_hidden="<input type='hidden' name='buku_"+item+"' id='buku_"+item+"' value='"+result.data[item].id_jenbuku+"'><input type='hidden' name='buku_valas_"+result.data[item].id_jenbuku+"' id='buku_valas_"+result.data[item].id_jenbuku+"' value='"+result.data[item].kdvalas+"'><input type='hidden' name='buku_sawal_"+result.data[item].id_jenbuku+"' id='buku_sawal_"+result.data[item].id_jenbuku+"' value='"+result.data[item].saldoawal+"'><input type='hidden' name='buku_tambah_"+result.data[item].id_jenbuku+"' id='buku_tambah_"+result.data[item].id_jenbuku+"' value='"+result.data[item].penambahan+"'><input type='hidden' name='buku_kurang_"+result.data[item].id_jenbuku+"' id='buku_kurang_"+result.data[item].id_jenbuku+"' value='"+result.data[item].pengurangan+"'><input type='hidden' name='buku_sakhir_"+result.data[item].id_jenbuku+"' id='buku_sakhir_"+result.data[item].id_jenbuku+"' value='"+result.data[item].saldoakhir+"'>";
+									var html='<tr>'+input_hidden+'<td>'+result.data[item].nmbuku+'</td><td>'+result.data[item].kdvalas+'</td><td>'+result.data[item].saldoawal+'</td><td>'+result.data[item].penambahan+'</td><td>'+result.data[item].pengurangan+'</td><td>'+result.data[item].saldoakhir+'</td></tr>';
 									$('#tabel_lpj_detail > tbody  ').append(html);
 									
 									}
@@ -215,11 +214,18 @@ jQuery(document).ready(function() {
 							}
                 $('#nomor').prop('disabled',false);
                 $('#tanggal').prop('disabled',false);
+                 jQuery('#tanggal').datepicker({
+                        format: 'mm-dd-yyyy',
+                        autoclose: true
+                    });
                 $('#nomor').prop('disabled',false);
                  $('#brankas').prop('disabled',false);
                  $('#bank').prop('disabled',false);
             });
+            jQuery.get('buku/maxnobuku',data,function(result){$('#notran').val(result.data.length > 0 ? result.data[0].notran : '0');});
+              jQuery.get('kuitansi/getkuitansigu',data,function(result){$('#kuitansiup').val(result.data.length > 0 ? result.data[0].niltran : '0');});
         });
+      
 		
 		var table=jQuery('#tabel-ruh').DataTable({
 			bProcessing:true,
@@ -308,7 +314,7 @@ jQuery(document).ready(function() {
 	jQuery('#simpan').click(function() {
 		jQuery('#simpan').html('<span class="loading"><i class="fa fa-refresh"></i> Sedang proses.....</span>');
 		jQuery('#simpan').prop('disabled',true);
-		var lanjut = form_valid('nospby,tgspby,kdvalas,nilai,kpd,uraian,kdgiat,kdoutput,kdakun');
+		var lanjut = form_valid('nomor,tanggal,notran,kuitansiup,brankas,bank,pejabt1,pejabat2');
 		if(lanjut == true) {
 			jQuery.get('token', function(token) {
 				if (token) {

@@ -28,6 +28,17 @@ class KuitansiController extends AppModelController {
         $column='nokwt';    
         return response()->json(['data'=>$this->getFirstRowByWhere($table,$where,$column) == 0 ? '1' : $this->getFirstRowByWhere($table,$where,$column)]);
     }
+    public function getKuitansiGu(Request $request){
+        $data = DB::table('v_kuitansi_gu')
+            ->where('coalesce(extract(month from tgsp2d),0)','<=',$request->input('bulan'))
+            ->where('kdsatker','=',session('kdsatker'))
+            ->where('thang','=',session('thang'))
+            ->select('thang','kdsatker','sum(niltran) as niltran')
+            ->groupBy('thang','kdsatker')
+            ->get();
+        return response()->json(['data'=>$data]);
+        
+    }
     
     public function add(Request $request) {
         if ($this->getCountByWhere('d_kuitansi_kemlu',['kdsatker'=>session('kdsatker'),'thang'=>session('thang'),'nokwt'=>$request->input('nokwt')])  < 1) {

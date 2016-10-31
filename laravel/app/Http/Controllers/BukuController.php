@@ -54,6 +54,14 @@ class BukuController extends AppModelController {
             ->get();
         return response()->json(['data'=>$rows]);
     }
+    public function maxNoBuku(Request $request){
+        $data=DB::table('v_max_nobuku')
+            ->where(['kdsatker'=>session('kdsatker'),'thang'=>session('thang'),'bulan'=>$request->input('bulan')])
+            ->select('notran')
+            ->get();
+        return response()->json(['data'=>$data]);
+        
+    }
     
     
     public function monitoring()

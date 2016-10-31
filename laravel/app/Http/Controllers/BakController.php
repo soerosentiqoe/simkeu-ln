@@ -21,16 +21,44 @@ class BakController extends AppModelController {
    
     public function add(Request $request)
 	{
-		$data=['thang'=>session('thang'),'kdsatker'=>session('kdsatker'),'nospby'=>$request->input('nospby'),'tgspby'=>$request->input('tgspby'),'kdvalas'=>$request->input('kdvalas'),'nilai'=>$request->input('nilai'),'kpd'=>$request->input('kpd'),'uraian'=>$request->input('uraian'),'kdgiat'=>$request->input('kdgiat'),'kdoutput'=>$request->input('kdoutput'),'kdakun'=>$request->input('kdakun'),'created_id'=>session('id'),'created_ip'=>$request->ip()];       
-        $where =['nospby'=>$request->input('nospby'),'thang'=>session('thang'),'kdsatker'=>session('kdsatker')];
+		$data=['thang'=>session('thang'),'kdsatker'=>session('kdsatker'),'nomor'=>$request->input('nomor'),'tanggal'=>$request->input('tanggal'),'bulan'=>$request->input('bulan'),'kdvalas'=>$request->input('kdvalas'),'notran'=>$request->input('notran'),'brankas'=>$request->input('brankas'),'bank'=>$request->input('bank'),'kuitansiup'=>$request->input('kuitansiup'),'nipkpa'=>$request->input('pejabat2'),'nipbend'=>$request->input('pejabat1'),'created_id'=>session('id'),'created_ip'=>$request->ip()];       
+        $where =['bulan'=>$request->input('bulan'),'thang'=>session('thang'),'kdsatker'=>session('kdsatker'),'kdvalas'=>$request->input('kdvalas')];
         if ($this->getCountByWhere($this->table,$where) > 0) {
-			return response()->json(['error' =>true,'message' => 'Nomor SPBY'.$request->input('nospby').' Sudah Ada !']);
+			return response()->json(['error' =>true,'message' => 'LPJ bulan :'.$request->input('bulan').' Tahun : '.session('thang').' Valas : '.$request->input('kdvalas').'Sudah Ada !']);
 		}   else {
 			DB::beginTransaction();
 			DB::setDateFormat('MM/DD/YYYY');
-			 if (DB::table($this->table)->insert($data) ) {             
-				  DB::commit();
-				 return response()->json(['error' => false,'message' => 'Insert data berhasil']);             
+			 if (DB::table($this->table)->insert($data) ) {  
+                 $id_lpj=$this->getMaxId($this->table,'id');
+                 $j=0;
+                 $i=0;
+                 if ($request->input('jml_buku') > 0){
+                        for ($i=0;$i <= $request->input('jml_buku');$i++) {
+                             $id_buku='buku_'.$i;
+                             $nilai_id_buku=$request->input($id_buku);
+                             $data=['id_lpj'=>$id_lpj,'id_buku'=>$nilai_id_buku,'saldoawal'=>$request->input('buku_sawal_'.$nilai_id_buku),'penambahan'=>$request->input('buku_tambah_'.$nilai_id_buku),'pengurangan'=>$request->input('buku_kurang_'.$nilai_id_buku),'saldoakhir'=>$request->input('buku_sakhir_'.$nilai_id_buku)];
+                             if (DB::table('d_lpj_buku_kemlu')->insert($data)){
+                                 $j=$j+1;
+                             } else {
+                                 $j=$j+0;
+                                 
+                             }
+
+                         }
+                     
+                 }
+                 if ($j == $i){
+                     DB::commit();
+                     return response()->json(['error' => false,'message' => 'Insert data berhasil ']); 
+                 } else {
+                      DB::rollback();
+                     return response()->json(['error' =>true,'message' => 'Insert Data gagal. Silahkan hubungi Administrator','i'=>$i,'j'=>$j]);
+                 }
+                 
+               
+                 
+				  
+				             
 			 } else {
 				 return response()->json(['error' =>true,'message' => 'Insert Data gagal. Silahkan hubungi Administrator']);
 			 }

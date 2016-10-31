@@ -209,6 +209,15 @@ class DropdownController extends Controller {
                 echo $htmlout;
         
     }
+    public function getPejabat(Request $request) {
+		  		$rows=DB::table('t_pejabat')->orderBy('nip','asc')->select('id','nip','nama')->get();
+		        $htmlout = '<option value="" style="display:none;">Pilih Pejabat</option>';
+                foreach($rows as $row) {
+                      $htmlout .= '<option  value="'.$row->nip.'">'.$row->nip.'-'.$row->nama.'</option>';
+                }
+                echo $htmlout;
+        
+    }
     
 	
 }
