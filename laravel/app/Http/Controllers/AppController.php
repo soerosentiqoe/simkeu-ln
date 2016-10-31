@@ -142,7 +142,7 @@ class AppController extends Controller {
 				'info_nama' => session('nama'),
 				'info_email' => session('nip'),
 				'info_tahun' => session('thang'),
-			  'app_name'=>$data_site[0]->name_site,
+                'app_name'=>$data_site[0]->name_site,
 			    'app_description'=>$data_site[0]->description,
 			    'app_author'=>$data_site[0]->author,
 			    'app_keyword'=>$data_site[0]->keyword,

@@ -47,13 +47,13 @@
 <body class="skin-blue">
 
 	<!-- header logo: style can be found in header.less -->
-	<header class="header">
-		<a href="javascript:;" class="logo">
+	<header class="header bg-aqua">
+		<a href="javascript:;" class="logo" ui-sref="/">
 			<!-- Add the class icon to your logo image or logo icon to add the margining -->
 			<img src="{{ asset('/template/img/header_simkeu_app.ico')}}" width="102" height="36">
 		</a>
 		<!-- Header Navbar: style can be found in header.less -->
-		<nav class="navbar navbar-static-top" role="navigation">
+		<nav class="navbar navbar-static-top bg-blue" role="navigation">
 			<!-- Sidebar toggle button-->
 			<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
 				<span class="sr-only">Toggle navigation</span>
@@ -81,7 +81,9 @@
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header bg-green">
+                                <!--
 								<img src="data/user/<?php echo $info_foto; ?>" class="img-circle" alt="User Image" />
+-->
 								<p id="info-user">
 									<?php echo $info_nama; ?>
 									<br>
@@ -91,7 +93,9 @@
 							<!-- Menu Body -->
 							<li class="user-body">
 								<div class="col-xs-7 text-center">
+                                    <!--
 									<a ui-sref="profile">Profile</a>
+                                    -->
 								</div>
 								<!--<div class="col-xs-5">
 									<a href="group" onclick="window.open(this.href, 'Group','left=20,top=20,width=500,height=500,toolbar=0,resizable=0'); return false;">Group</a>
