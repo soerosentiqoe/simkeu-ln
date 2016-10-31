@@ -74,14 +74,16 @@
                                       <div class="form-group">
                                                 <label class="control-label col-sm-1">No Buku Terakhir</label>
                                                 <div class="col-sm-2">
-                                                    <input id="notran" name="notran" class="form-control" disabled>
+                                                    <input id="notran" name="notran" class="form-control" type="hidden">
+                                                    <input id="notran1" name="notran1" class="form-control" disabled>
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <span id="warning-notran" class="label label-warning warning">Required!</span>
                                                 </div>
                                                 <label class="control-label col-sm-1">Kuitansi UP</label>
                                                 <div class="col-sm-2">
-                                                    <input id="kuitansiup" name="kuitansiup" class="form-control" disabled>
+                                                    <input id="kuitansiup" name="kuitansiup" class="form-control" type="hidden">
+                                                    <input id="kuitansiup1" name="kuitansiup1" class="form-control" disabled>
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <span id="warning-kuitansiup" class="label label-warning warning">Required!</span>
@@ -222,8 +224,8 @@ jQuery(document).ready(function() {
                  $('#brankas').prop('disabled',false);
                  $('#bank').prop('disabled',false);
             });
-            jQuery.get('buku/maxnobuku',data,function(result){$('#notran').val(result.data.length > 0 ? result.data[0].notran : '0');});
-              jQuery.get('kuitansi/getkuitansigu',data,function(result){$('#kuitansiup').val(result.data.length > 0 ? result.data[0].niltran : '0');});
+            jQuery.get('buku/maxnobuku',data,function(result){$('#notran').val(result.data.length > 0 ? result.data[0].notran : '0');$('#notran1').val(result.data.length > 0 ? result.data[0].notran : '0');});
+              jQuery.get('kuitansi/getkuitansigu',data,function(result){$('#kuitansiup').val(result.data.length > 0 ? result.data[0].niltran : '0');$('#kuitansiup1').val(result.data.length > 0 ? result.data[0].niltran : '0');});
         });
       
 		

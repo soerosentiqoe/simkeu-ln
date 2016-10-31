@@ -1,0 +1,179 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1><i class="fa fa-list"></i> </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              SPBY
+				            </h3>
+                <p>
+                    Surat Perintah Bayar
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+       <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-black">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              Kuitansi
+				            </h3>
+                <p>
+                    
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+       <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-green">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              DRPP
+				            </h3>
+                <p>
+                    Daftar Rincian Pelaksanaan Pembayaran
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+     <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-red">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              SPP
+				            </h3>
+                <p>
+                    Surat Perintah Pembayaran
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+       <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-blue">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              SPM
+				            </h3>
+                <p>Surat Perintah Membayar
+                    
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+       <div class="col-md-3 col-sm-6 col-lg-4">
+        <div class="small-box bg-yellow">
+            <div class="inner">
+                <h3>
+				            <img id="count1" src="" />
+				              SP2D
+				            </h3>
+                <p>
+                    Daftar Perintah Pencairan Dana
+                    <br/>
+                    <b id="countb1">5</b> Dok
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-email"></i>
+            </div>
+            <a href="" class="small-box-footer">
+				              Lihat Detail <i class="fa fa-arrow-circle-right"></i>
+				            </a>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+		
+		<div class="col-lg-12">
+			<div id="grafik1"></div>
+		</div>
+		
+	</div>
+
+
+</section>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('#grafik1').highcharts({
+			title: {
+				text: 'Realisasi',
+				x: -20 //center
+			},
+			xAxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+					'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			},
+			yAxis: {
+				title: {
+					text: 'Persentase'
+				},
+				plotLines: [{
+					value: 0,
+					width: 1,
+					color: '#808080'
+				}]
+			},
+			legend: {
+				layout: 'vertical',
+				align: 'right',
+				verticalAlign: 'middle',
+				borderWidth: 0
+			},
+			series: [{
+				name: '',
+				data: [7.0, 10, 11.5, 14.5, 18.2, 21.5, 35.2, 46.5, 63.3, 78.3, 83.9, 89.6]
+			}]
+		});
+
+    });
+</script>

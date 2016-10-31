@@ -116,6 +116,10 @@ class AppController extends Controller {
 			}
 			
 		}
+        $angular .= '.state("/", {
+										url: "/",
+										templateUrl: "partials/Dashboard.html"
+									})';
 		/*
 		$angular .= '.state("profile", {
 							url: "/profile",

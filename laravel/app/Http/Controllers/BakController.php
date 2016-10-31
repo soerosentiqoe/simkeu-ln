@@ -71,12 +71,36 @@ class BakController extends AppModelController {
     
     public function ubah(Request $request) {
         $where=['id'=>$request->input('inp-id')];
-        $data=['tgspby'=>$request->input('tgspby'),'kdvalas'=>$request->input('kdvalas'),'nilai'=>$request->input('nilai'),'kpd'=>$request->input('kpd'),'uraian'=>$request->input('uraian'),'kdgiat'=>$request->input('kdgiat'),'kdoutput'=>$request->input('kdoutput'),'kdakun'=>$request->input('kdakun'),'created_id'=>session('id'),'created_ip'=>$request->ip()];       
+        $data=['nomor'=>$request->input('nomor'),'tanggal'=>$request->input('tanggal'),'notran'=>$request->input('notran'),'brankas'=>$request->input('brankas'),'bank'=>$request->input('bank'),'kuitansiup'=>$request->input('kuitansiup'),'nipkpa'=>$request->input('pejabat2'),'nipbend'=>$request->input('pejabat1'),'updated_id'=>session('id'),'updated_ip'=>$request->ip()];       
 		DB::beginTransaction();
 		DB::setDateFormat('MM/DD/YYYY');
-        if (DB::table($this->table)->where($where)->update($data)) {            
-            DB::commit();
-            return response()->json(['error' => false,'message' => 'Update data berhasil']);
+        if (DB::table($this->table)->where($where)->update($data)) { 
+            $where=['id_lpj'=>$request->input('inp-id')];
+            DB::table('d_lpj_buku_kemlu')->where($where)->delete();
+                $j=0;
+                $i=0;
+                 if ($request->input('jml_buku') > 0){
+                        for ($i=0;$i <= $request->input('jml_buku');$i++) {
+                             $id_buku='buku_'.$i;
+                             $nilai_id_buku=$request->input($id_buku);
+                             $data=['id_lpj'=>$request->input('inp-id'),'id_buku'=>$nilai_id_buku,'saldoawal'=>$request->input('buku_sawal_'.$nilai_id_buku),'penambahan'=>$request->input('buku_tambah_'.$nilai_id_buku),'pengurangan'=>$request->input('buku_kurang_'.$nilai_id_buku),'saldoakhir'=>$request->input('buku_sakhir_'.$nilai_id_buku)];
+                             if (DB::table('d_lpj_buku_kemlu')->insert($data)){
+                                 $j=$j+1;
+                             } else {
+                                 $j=$j+0;
+                                 
+                             }
+
+                         }
+                     
+                 }
+             if ($j == $i){
+                     DB::commit();
+                     return response()->json(['error' => false,'message' => 'Insert data berhasil ']); 
+                 } else {
+                      DB::rollback();
+                     return response()->json(['error' =>true,'message' => 'Insert Data gagal. Silahkan hubungi Administrator','i'=>$i,'j'=>$j]);
+                 }
             
         } else {
             return response()->json(['error' =>true,'message' => 'Update Data gagal. Silahkan hubungi Administrator']);
@@ -85,8 +109,10 @@ class BakController extends AppModelController {
     }
     public function hapus(Request $request) {
         $where=['id'=>$request->input('id')];
+        $where1=['id_lpj'=>$request->input('id')];
         DB::beginTransaction();
         if (DB::table($this->table)->where($where)->delete()) {
+            DB::table('d_lpj_buku_kemlu')->where($where)->delete();
             DB::commit();
             return response()->json(['error' => false,'message' => 'Hapus data berhasil']);
             
